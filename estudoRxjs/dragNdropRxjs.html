@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://unpkg.com/@reactivex/rxjs@6.3.3/dist/global/rxjs.umd.js"></script>
+    <title>Exemplo de requisição HTTP GET com javascript puro</title>
+    <style>
+        .card {
+            width: 300px;
+            height: 300px;
+            background: #666;
+            border: solid 1px #333;
+            cursor: move;
+            position: absolute;
+            box-shadow: #333 1px 1px 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+    </div>
+
+    <script>
+
+        const { fromEvent } = rxjs;
+        const { switchMap, takeUntil, map } = rxjs.operators;
+
+
+        const card = document.querySelector('.card');
+
+        const mouseDown$ = fromEvent(card, 'mousedown');
+        const mouseUp$ = fromEvent(document, 'mouseup');
+        const mouseMove$ = fromEvent(document, 'mousemove')
+
+        //quando ocorrer um evento no meu mouse down
+        const draAndDrop$ = mouseDown$.pipe(
+            //x e y e aplicar a transformaçoes
+            //map pega o valor e transforma em outra coisa
+            map(e=>({
+                x: e.clientX,
+                y: e.clientY,
+                target: {
+                    x: e.target.offsetLeft,
+                    y: e.target.offsetTop,
+                }
+
+
+            })),
+
+            //vou me inscrever no mouse move, até que tenha mouse up 
+            switchMap(start => mouseMove$.pipe(
+                map( e =>({
+                    x: e.clientX - start.x +start.target.x,
+                    y: e.clientY - start.y +start.target.y
+                })),
+                takeUntil(mouseUp$)
+            ))
+        );
+
+        //pegar os valores e setar ele na tela
+        draAndDrop$.subscribe(
+            val => {
+
+                //aplicar as tranformações diretamente no card
+                card.style.top = `${val.y}px`;
+                card.style.left = `${val.x}px`;
+            }
+        )
+
+    </script>
+</body>
+
+</html>

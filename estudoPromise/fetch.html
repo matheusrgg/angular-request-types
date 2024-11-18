@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Exemplo de requisição HTTP GET com javascript puro</title>
+</head>
+<body>
+
+    <!-- <input type="text" id="url" style="width:300px;" value="https://dicasdejavascript.com.br/exemplo.txt"> -->
+    <button onclick="fazerRequisicao();">Fazer requisição</button>
+    <hr />
+    <div id="resposta"></div>
+
+    <script>
+        function fazerRequisicao(){
+
+            fetch('https://rickandmortyapi.com/api/character/16')
+                .then((response) => response.json())
+                .then((data) => console.log(data));
+        }
+    </script>
+</body>
+</html>

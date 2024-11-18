@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://unpkg.com/@reactivex/rxjs@6.3.3/dist/global/rxjs.umd.js"></script>
+    <title>Exemplo de requisição HTTP GET com javascript puro</title>
+   
+</head>
+
+<body>
+
+    <div class="content">
+
+        <input type="text" placeholder="Pais...">
+        <ul>
+
+        </ul>
+
+    </div>
+
+    <script>
+
+        const { fromEvent, ajax:{ajax}} = rxjs;
+        const { pluck, map, debounceTime, switchMap , catchError} = rxjs.operators;
+
+
+        const input = fromEvent(document.querySelector("input"), 'input');
+        const ul = document.querySelector("ul");
+
+
+        const mostraResultado = res =>{
+            ul.innerHTML = res.map(e=>`<li>${e}</li>`).join('')
+        }
+
+        const buscaPaisesNaApi = termo => ajax(`https://restcountries.com/v3.1/name/${termo}?fields=name`).pipe(
+
+            // map((x) => console.log("teste o q tem dentro", x.response[0].name))
+            pluck('response'),
+            // map(resposta => resposta.map(e => e.name))
+            map(resposta => console.log("existe isso? map detrno do map", resposta.map(e => e.name))),
+            map(resposta => console.log("existe isso? map", resposta))
+        )
+
+
+        input.pipe(
+
+        debounceTime(300),
+        pluck('target', 'value'),
+        map(e=> e.trim()),
+       
+        switchMap(buscaPaisesNaApi),
+        catchError((err, source) =>{
+            console.log(err);
+            return source
+        })
+
+        //switchMap() se inscreve em um novo observable e ignora o anterior
+
+        )
+
+        .subscribe(mostraResultado)
+    </script>
+</body>
+
+</html>
