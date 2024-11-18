@@ -1,0 +1,57 @@
+@Component({
+  selector: 'app-promise-example',
+  templateUrl: './promise-example.component.html',
+  styleUrls: ['./promise-example.component.css']
+})
+export class PromiseExampleComponent implements OnInit {
+  largeData: any;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.getLargeData()
+      .then((response) => {
+        console.log('Data loaded with Promise:', response);
+        this.largeData = response;
+      })
+      .catch((error) => {
+        console.error('Error loading data:', error);
+      });
+  }
+
+  getLargeData(): Promise<any> {
+    const url = 'https://api.example.com/large-data'; // Replace with your API endpoint
+    return this.http.get<any>(url).toPromise(); // Using .toPromise() to handle the response as a Promise
+  }
+}
+
+
+--------------------------------------------
+
+
+@Component({
+  selector: 'app-promise-example',
+  templateUrl: './promise-example.component.html',
+  styleUrls: ['./promise-example.component.css']
+})
+export class PromiseExampleComponent implements OnInit {
+  largeData: any;
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.getLargeData()
+      .then((response) => {
+        console.log('Data loaded with Promise:', response);
+        this.largeData = response;
+      })
+      .catch((error) => {
+        console.error('Error loading data:', error);
+      });
+  }
+
+  getLargeData(): Promise<any> {
+    const url = 'https://api.example.com/large-data'; // Replace with your API endpoint
+    return this.http.get<any>(url).toPromise(); // Using .toPromise() to handle the response as a Promise
+  }
+}
